@@ -6,3 +6,4 @@ langchain-community
 tavily-python
 pydantic
 python-dotenv
+langchain-groq
