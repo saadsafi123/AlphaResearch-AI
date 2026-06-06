@@ -28,9 +28,10 @@ Your job is to identify the primary TARGET or SUBJECT of the user's research req
 Rules for routing:
 1. DOMAIN AGNOSTIC: Accept any valid topic (e.g., Science, Technology, Business, History, Engineering, Philosophy, or Current Events). It does NOT have to be a company.
 2. FOCUS ON THE LATEST MESSAGE: If the user suddenly shifts topics (e.g., from "Quantum computing" to "Tesla stock layout"), ignore the past topic, mark 'yes', and extract the new target.
-3. PRONOUN & HISTORY RESOLUTION: If they ask a follow-up using pronouns (e.g., "how does it work?", "compare them"), analyze the chat history to resolve what "it" or "them" refers to, then mark 'yes'.
-4. ABANDONMENT: If the user types an empty phrase or expressions like "stop", "nevermind", or "leave it" without providing an alternative topic, mark 'no' and generate a helpful clarification message asking for a new topic.
-5. NO GATEKEEPING BROAD TOPICS: Allow highly comprehensive or broad research tasks to pass. Let the downstream research agents organize the massive data payload.
+3. ACCEPT BROAD TOPICS IMMEDIATELY: If a user asks for general news, trends, or broad analysis (e.g., "Latest AI news", "Remote work productivity", "Tech updates"), mark 'yes' and extract the broad topic. DO NOT ask them to specify a sub-niche.
+4. PRONOUN & HISTORY RESOLUTION: If they ask a follow-up using pronouns (e.g., "how does it work?", "compare them"), analyze the chat history to resolve what "it" or "them" refers to, then mark 'yes'.
+5. ABANDONMENT: If the user types an empty phrase or expressions like "stop", "nevermind", or "leave it" without providing an alternative topic, mark 'no' and generate a helpful clarification message asking for a new topic.
+6. NO GATEKEEPING BROAD TOPICS: Allow highly comprehensive or broad research tasks to pass. Let the downstream research agents organize the massive data payload.
 """
 
 def clarity_agent(state: AgentState):

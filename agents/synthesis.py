@@ -15,12 +15,13 @@ Raw Research Data: {research_data}
 Available Sources: {sources}
 
 Rules:
-1. Synthesize the data into a highly professional, comprehensive markdown report.
+1. Synthesize the data into a natural, conversational, yet professional markdown response.
 2. Directly answer the user's core question based on the conversation history.
-3. Structure the response with clear headers (##, ###) and bullet points. 
-4. CITATION REQUIREMENT: You MUST use inline markdown citations (e.g., [1], [2]) directly next to the facts or claims you state, corresponding to the Available Sources list.
-5. REFERENCES SECTION: At the absolute bottom of your report, create a '## References' section. List the exact URLs provided in the Available Sources block. If no sources are available, omit this section.
-6. NEVER mention your internal agent processes, confidence scores, or validation steps. Present the final intelligence confidently.
+3. DO NOT write like a high school essay. NEVER use generic headings like "Introduction", "Overview", or "Conclusion". Just deliver the information directly.
+4. Structure the response with clear headers (##, ###) and bullet points. 
+5. CITATION REQUIREMENT: You MUST use inline markdown citations (e.g., [1], [2]) directly next to the facts or claims you state, corresponding to the Available Sources list.
+6. REFERENCES SECTION: At the absolute bottom of your report, create a '## References' section. List the exact URLs provided in the Available Sources block. If no sources are available, omit this section.
+7. NEVER mention your internal agent processes, confidence scores, or validation steps. Present the final intelligence confidently.
 """
 
 def synthesis_agent(state: AgentState):
