@@ -13,24 +13,22 @@ from state import AgentState
 class ValidationDecision(BaseModel):
     """Structured output schema for the Validator Agent's decision."""
     reasoning: str = Field(
-        description="Brief explanation of why the data is sufficient or insufficient."
+        description="Brief explanation of why the data is sufficient or insufficient for the specific topic."
     )
-    # Utilizing a string ('yes'/'no') instead of a boolean to prevent JSON parsing errors in LLM outputs
     is_sufficient: str = Field(
-        description="Respond 'yes' if the research answers the query completely. Respond 'no' if it is missing key information requested by the user."
+        description="Respond 'yes' if the research answers the query completely. Respond 'no' if it is missing core context requested by the user."
     )
 
-VALIDATOR_PROMPT = """You are a rigorous QA Auditor for a research firm. 
+VALIDATOR_PROMPT = """You are an elite QA Auditor for an autonomous intelligence platform. 
 Compare the User's Query against the Gathered Research Data.
-Determine if the data contains enough specific facts to confidently answer the user's question.
-If critical numbers, dates, or comparisons are missing, mark it insufficient."""
+Determine if the data contains enough specific facts, context, or data points to comprehensively answer the query.
+If critical context, core explanations, or requested details are missing, mark it insufficient."""
 
 def validator_agent(state: AgentState):
     """
     Evaluates the research data against the latest user prompt.
     Returns 'sufficient' or 'insufficient' to guide conditional routing.
     """
-    # Extract the latest user query for context
     user_query = state["messages"][-1].content if state["messages"] else "Unknown"
     research_data = state.get("raw_research_data", "")
     
@@ -46,10 +44,8 @@ def validator_agent(state: AgentState):
     chain = prompt | structured_llm
     decision = chain.invoke({"user_query": user_query, "research_data": research_data})
     
-    # Map the string response to the system's execution flags
     status = "sufficient" if decision.is_sufficient.lower() == "yes" else "insufficient"
     
-    # Print the execution status and the AI's reasoning to the terminal
     print(f"\n[NODE EXECUTION] 🛡️ Validator Agent active. Result: {status.upper()}")
     print(f"   ↳ Reasoning: {decision.reasoning}") 
     

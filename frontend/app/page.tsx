@@ -2,7 +2,7 @@
  * Frontend UI: AlphaResearch AI
  * Description: A Next.js chat interface for a LangGraph multi-agent backend.
  * Features: Word-by-word streaming simulation, dynamic agent-state tracking, 
- * and Human-in-the-Loop (HITL) interrupt handling.
+ * automated citation formatting, and Human-in-the-Loop (HITL) interrupt handling.
  */
 
 "use client";
@@ -13,7 +13,6 @@ import remarkGfm from "remark-gfm";
 import { Send, Loader2, AlertCircle, Bot, User, Sparkles, Database, ShieldCheck, PenTool, MessageSquare } from "lucide-react";
 
 // --- CUSTOM HOOK: Word-by-Word Typewriter Effect ---
-// Ensures pure rendering by syncing text state directly during the render phase.
 function useTypewriter(text: string, speed: number = 10) {
   const [displayedText, setDisplayedText] = useState("");
   const [prevText, setPrevText] = useState(text);
@@ -39,8 +38,7 @@ function useTypewriter(text: string, speed: number = 10) {
   return displayedText;
 }
 
-// --- SUB-COMPONENT: AI Message with Typewriter ---
-// Safely handles undefined text lengths and renders Markdown with GitHub Flavored Markdown (tables, lists).
+// --- SUB-COMPONENT: AI Message with Typewriter & Safe Links ---
 const AiMessage = ({ content = "" }: { content: string }) => {
   const typedContent = useTypewriter(content, 10);
   
@@ -48,8 +46,16 @@ const AiMessage = ({ content = "" }: { content: string }) => {
   const totalLength = content?.length || 0;
   
   return (
-    <div className="prose prose-slate max-w-none prose-headings:font-semibold prose-a:text-blue-600">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+    <div className="prose prose-slate max-w-none prose-headings:font-semibold">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        // This component override forces all citations to open in a NEW tab
+        components={{
+          a: ({node, ...props}) => (
+            <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline" />
+          )
+        }}
+      >
         {typedContent}
       </ReactMarkdown>
       {totalLength > 0 && typedLength < totalLength && (
@@ -70,7 +76,7 @@ export default function ChatPage() {
   const [needsClarification, setNeedsClarification] = useState(false);
   const [activeAgent, setActiveAgent] = useState(0); 
 
-  // Conversation Thread ID (Initialized safely to prevent impure renders)
+  // Conversation Thread ID
   const [threadId, setThreadId] = useState(() => Math.random().toString(36).substring(7));
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +85,7 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  // Simulate Agent Pipeline tracking while waiting for the backend
+  // Simulate Agent Pipeline tracking
   useEffect(() => {
     if (!isLoading) return;
     
@@ -91,7 +97,7 @@ export default function ChatPage() {
     return () => timers.forEach(clearTimeout);
   }, [isLoading]);
 
-  // Hard resets the chat and generates a new thread ID to clear backend memory
+  // Hard resets the chat and generates a new thread ID
   const resetChat = () => {
     setMessages([]); 
     setInput("");
@@ -184,7 +190,7 @@ export default function ChatPage() {
                 </div>
                 <h2 className="text-2xl font-bold text-slate-800">What would you like to research?</h2>
                 <p className="text-slate-500 max-w-md">
-                  I am a multi-agent system. I will analyze your request, search the web, validate facts, and write a comprehensive report.
+                  I am a multi-agent system. I will analyze your request, search the web, validate facts, and write a comprehensive, cited report.
                 </p>
               </div>
             )}
@@ -211,8 +217,17 @@ export default function ChatPage() {
                       index === messages.length - 1 ? (
                         <AiMessage content={msg.content} />
                       ) : (
-                        <div className="prose prose-slate max-w-none prose-headings:font-semibold prose-a:text-blue-600">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                        <div className="prose prose-slate max-w-none prose-headings:font-semibold">
+                          <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              a: ({node, ...props}) => (
+                                <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium no-underline hover:underline" />
+                              )
+                            }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
                         </div>
                       )
                     )}
@@ -286,7 +301,7 @@ export default function ChatPage() {
               </button>
             </form>
             <div className="text-center mt-3 text-xs text-slate-400">
-              AlphaResearch AI can make mistakes. Consider verifying important financial data.
+              AlphaResearch AI can make mistakes. Consider verifying important information.
             </div>
           </div>
         </div>

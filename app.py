@@ -1,5 +1,5 @@
 """
-API Server: VigilAgent (Multi-Agent Research Assistant)
+API Server: AlphaResearch AI Core
 Description: FastAPI application serving as the primary entry point for the frontend.
 It handles CORS, receives chat requests, passes them to the LangGraph orchestration 
 engine, and manages the execution state and HTTP error handling.
@@ -19,8 +19,11 @@ from graph import graph
 # Load environment variables (.env)
 load_dotenv()
 
-# Initialize FastAPI application
-app = FastAPI(title="VigilAgent API", description="Multi-Agent Research Assistant")
+# Initialize FastAPI application with production-grade metadata
+app = FastAPI(
+    title="AlphaResearch AI API", 
+    description="Universal Multi-Agent Autonomous Research Platform"
+)
 
 # Configure CORS to allow communication from the Next.js frontend
 app.add_middleware(

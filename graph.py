@@ -1,5 +1,5 @@
 """
-Graph Orchestration: VigilAgent Workflow
+Graph Orchestration: AlphaResearch AI Workflow
 Description: Defines the StateGraph logic, nodes, and conditional routing edges.
 This file wires the 4 specialized agents together into a cyclic, memory-backed pipeline.
 """
